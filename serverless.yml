@@ -1,0 +1,62 @@
+service: nest-serverless-app
+
+useDotenv: true
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  environment:
+    MONGODB_URI: ${env:MONGODB_URI}
+    NODE_ENV: ${env:NODE_ENV}
+
+functions:
+  createTodo:
+    handler: dist/main.handler
+    events:
+      - http:
+          path: /todos
+          method: post
+          cors: true
+
+  getTodos:
+    handler: dist/main.handler
+    events:
+      - http:
+          path: /todos
+          method: get
+          cors: true
+
+  getTodoById:
+    handler: dist/main.handler
+    events:
+      - http:
+          path: /todos/{id}
+          method: get
+          cors: true
+
+  updateTodo:
+    handler: dist/main.handler
+    events:
+      - http:
+          path: /todos/{id}
+          method: patch
+          cors: true
+
+  deleteTodo:
+    handler: dist/main.handler
+    events:
+      - http:
+          path: /todos/{id}
+          method: delete
+          cors: true
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+    lambdaPort: 4002
